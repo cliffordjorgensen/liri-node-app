@@ -46,18 +46,54 @@ const main = function() {
                         name: "song"
                     }]).then(function(song) {
                         var songName = song.song;
-                        axios.get("https://api.spotify.com/v1/search?q=" + songName + "&type=track")
-                            .then(function(songInfo) {
-                                console.log(songInfo.data)
-                            }).catch(function(error) {
-                                console.log(error.config);
-                            })
+
+                        spotify.search({ type: 'track', query: songName, limit: 1, market: 'US', popularity: 100 }, function(err, data) {
+                            if (err) {
+                                return console.log('Error occurred: ' + err);
+                            }
+                            var songObj = {
+                                song_name: data.tracks.items[0].name,
+                                artist: data.tracks.items[0].artists[0].name,
+                                link: data.tracks.items[0].external_urls.spotify,
+                                album: data.tracks.items[0].album.name
+                            }
+                            console.log('\nDetails\n')
+                            console.log(songObj);
+
+                        });
+
                     })
                     //make axios call
                     //display shit for the user
             } else if (pickedOP === 'movie-this') {
-                //make axios call
-                //display shit for the user
+                inquirer
+                    .prompt([{
+                        type: "input",
+                        message: "\nPlease enter a movie title: ",
+                        name: "userMovie"
+                    }]).then(function(mov) {
+                        var movie = mov.userMovie
+
+                        axios.get("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=414d26ac").then(
+                            function(response) {
+                                // Then we print out the imdbRating
+                                var movieObj = {
+                                    title: response.data.Title,
+                                    year: response.data.Year,
+                                    imdb_Rating: response.data.imdbRating,
+                                    rotten_tomatoes_rating: response.data.Ratings[1].Value,
+                                    country_produced: response.data.Country,
+                                    movie_language: response.data.Language,
+                                    plot: response.data.Plot,
+                                    actors: response.data.Actors
+                                }
+                                console.log('\nDetails\n')
+                                console.log(movieObj)
+                            }
+                        );
+                    })
+                    //make axios call
+                    //display shit for the user
             } else if (pickedOP === 'do-what-it-says') {
                 //make axios call
                 //display shit for the user
