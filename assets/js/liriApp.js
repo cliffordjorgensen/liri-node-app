@@ -1,4 +1,5 @@
 require("dotenv").config(); //set environment variables with dotenv package
+var fs = require("fs");
 var keys = require("./keys.js"); //import api keys via keys.js
 var Spotify = require('node-spotify-api'); //import spotify api package
 var spotify = new Spotify(keys.spotify); //access spotify key
@@ -10,10 +11,11 @@ const main = function() {
         .prompt([{
             type: "list",
             message: "\n\tPlease choose a command.\n\n",
-            choices: ["concert-this", "spotify-this-song", "movie-this", "do-what-it-says"],
+            choices: ["concert-this", "spotify-this-song", "movie-this", "do-what-it-says", "quit"],
             name: "menuChoice"
         }]).then(function(userChoice) {
-            var pickedOP = userChoice.menuChoice
+            var pickedOP = userChoice.menuChoice;
+            // if (pickedOP === 'quit') { exit.main(); }
             if (pickedOP === 'concert-this') {
                 inquirer
                     .prompt([{
@@ -27,11 +29,11 @@ const main = function() {
                                 var event = response.data;
                                 for (let i = 0; i <= event.length; i++) {
                                     var venue = event[i].venue.name;
-                                    console.log("\nName of the Venue: " + venue)
                                     var city = event[i].venue.city;
-                                    console.log("\nVenue Location: " + city)
                                     var eventDate = event[i].datetime;
-                                    console.log("\n The date of the event is: " + eventDate)
+                                    console.log("\nName of the Venue: " + venue)
+                                    console.log("Venue Location: " + city)
+                                    console.log("The date of the event is: " + eventDate)
                                 }
                             }).catch(function(error) {
                                 console.log("---------------Data---------------");
@@ -46,7 +48,6 @@ const main = function() {
                         name: "song"
                     }]).then(function(song) {
                         var songName = song.song;
-
                         spotify.search({ type: 'track', query: songName, limit: 1, market: 'US', popularity: 100 }, function(err, data) {
                             if (err) {
                                 return console.log('Error occurred: ' + err);
@@ -57,14 +58,10 @@ const main = function() {
                                 link: data.tracks.items[0].external_urls.spotify,
                                 album: data.tracks.items[0].album.name
                             }
-                            console.log('\nDetails\n')
+                            console.log('\n\tDetails\n')
                             console.log(songObj);
-
                         });
-
-                    })
-                    //make axios call
-                    //display shit for the user
+                    });
             } else if (pickedOP === 'movie-this') {
                 inquirer
                     .prompt([{
@@ -72,11 +69,10 @@ const main = function() {
                         message: "\nPlease enter a movie title: ",
                         name: "userMovie"
                     }]).then(function(mov) {
-                        var movie = mov.userMovie
+                        var movie = mov.userMovie;
 
                         axios.get("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=414d26ac").then(
                             function(response) {
-                                // Then we print out the imdbRating
                                 var movieObj = {
                                     title: response.data.Title,
                                     year: response.data.Year,
@@ -87,17 +83,36 @@ const main = function() {
                                     plot: response.data.Plot,
                                     actors: response.data.Actors
                                 }
-                                console.log('\nDetails\n')
-                                console.log(movieObj)
+                                console.log('\n\tDetails\n');
+                                console.log(movieObj);
                             }
                         );
                     })
-                    //make axios call
-                    //display shit for the user
             } else if (pickedOP === 'do-what-it-says') {
+                fs.readFile("random.txt", "utf8", function(error, data) {
+                    if (error) {
+                        return console.log(error);
+                    }
+                    var dataArr = data.split(",");
+                    randomSong = dataArr[1];
+                    spotify.search({ type: 'track', query: randomSong, limit: 1, market: 'US', popularity: 100 }, function(err, data) {
+                        if (err) {
+                            return console.log('Error occurred: ' + err);
+                        }
+                        var songObj = {
+                            song_name: data.tracks.items[0].name,
+                            artist: data.tracks.items[0].artists[0].name,
+                            link: data.tracks.items[0].external_urls.spotify,
+                            album: data.tracks.items[0].album.name
+                        };
+                        console.log('\n\tDetails\n');
+                        console.log(songObj);
+                    });
+                });
+
                 //make axios call
                 //display shit for the user
             }
         });
-}
-main()
+};
+main();
