@@ -24,16 +24,37 @@ const main = function() {
                         var bandName = artist.band
                         axios.get("https://rest.bandsintown.com/artists/" + bandName + "/events?app_id=codingbootcamp")
                             .then(function(response) {
-                                console.log(response.data[0])
+                                var event = response.data;
+                                for (let i = 0; i <= event.length; i++) {
+                                    var venue = event[i].venue.name;
+                                    console.log("\nName of the Venue: " + venue)
+                                    var city = event[i].venue.city;
+                                    console.log("\nVenue Location: " + city)
+                                    var eventDate = event[i].datetime;
+                                    console.log("\n The date of the event is: " + eventDate)
+                                }
                             }).catch(function(error) {
                                 console.log("---------------Data---------------");
-                                console.log(error.response.data);
+                                console.log(error.config);
                             });
                     })
             } else if (pickedOP === 'spotify-this-song') {
-
-                //make axios call
-                //display shit for the user
+                inquirer
+                    .prompt([{
+                        type: "input",
+                        message: "please enter a song to search on spotify",
+                        name: "song"
+                    }]).then(function(song) {
+                        var songName = song.song;
+                        axios.get("https://api.spotify.com/v1/search?q=" + songName + "&type=track")
+                            .then(function(songInfo) {
+                                console.log(songInfo.data)
+                            }).catch(function(error) {
+                                console.log(error.config);
+                            })
+                    })
+                    //make axios call
+                    //display shit for the user
             } else if (pickedOP === 'movie-this') {
                 //make axios call
                 //display shit for the user
@@ -41,20 +62,6 @@ const main = function() {
                 //make axios call
                 //display shit for the user
             }
-
         });
 }
-
-
 main()
-
-// const spotifyCall = function() {
-//     axios
-//         .get()
-// }
-
-// inquirer
-//     .prompt([{
-//         type: "input",
-//         message: ""
-//     }])
