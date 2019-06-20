@@ -5,6 +5,7 @@ var Spotify = require('node-spotify-api'); //import spotify api package
 var spotify = new Spotify(keys.spotify); //access spotify key
 var inquirer = require("inquirer"); //import inquirer package
 var axios = require("axios"); //import axios package
+var moment = require('moment');
 
 const main = function() {
     inquirer
@@ -28,18 +29,14 @@ const main = function() {
                             .then(function(response) {
                                 var event = response.data;
                                 for (let i = 0; i <= event.length; i++) {
-
-                                    // //* Date of the Event (use moment to format this as "MM/DD/YYYY")
-
                                     var eventObj = {
                                         venue: event[i].venue.name,
                                         city: event[i].venue.city,
-                                        eventDate: event[i].datetime
+                                        eventDate: moment(event[i].datetime).format("MM/DD/YYYY")
                                     };
                                     console.log('\n\tDetails\n');
                                     console.log(eventObj);
                                 }
-
                             }).catch(function(error) {
                                 console.log("---------------Data---------------");
                                 console.log(error.config);
@@ -111,7 +108,7 @@ const main = function() {
                             album: data.tracks.items[0].album.name
                         };
                         console.log('\n\tDetails\n');
-                        console.log(json.stringify(songObj));
+                        console.log(songObj);
                     });
                 });
             }
