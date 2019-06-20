@@ -15,6 +15,6 @@ Follow on screen instructions. User is prompted to select an operation from a li
 
 User is prompted for relevant input based on menu selection.
 
-selected operation response is displayed for the user
+selected operation response data is displayed for the user
 
 
