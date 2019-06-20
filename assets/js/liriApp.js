@@ -1,5 +1,5 @@
 require("dotenv").config(); //set environment variables with dotenv package
-var fs = require("fs");
+var fs = require("fs"); //import core file-system package
 var keys = require("./keys.js"); //import api keys via keys.js
 var Spotify = require('node-spotify-api'); //import spotify api package
 var spotify = new Spotify(keys.spotify); //access spotify key
@@ -15,7 +15,7 @@ const main = function() {
             name: "menuChoice"
         }]).then(function(userChoice) {
             var pickedOP = userChoice.menuChoice;
-            // if (pickedOP === 'quit') { exit.main(); }
+            // if (pickedOP === 'quit') { exit.main(); };
             if (pickedOP === 'concert-this') {
                 inquirer
                     .prompt([{
@@ -23,23 +23,28 @@ const main = function() {
                         message: "Please enter the name of an artist or band.",
                         name: "band"
                     }]).then(function(artist) {
-                        var bandName = artist.band
+                        var bandName = artist.band;
                         axios.get("https://rest.bandsintown.com/artists/" + bandName + "/events?app_id=codingbootcamp")
                             .then(function(response) {
                                 var event = response.data;
                                 for (let i = 0; i <= event.length; i++) {
-                                    var venue = event[i].venue.name;
-                                    var city = event[i].venue.city;
-                                    var eventDate = event[i].datetime;
-                                    console.log("\nName of the Venue: " + venue)
-                                    console.log("Venue Location: " + city)
-                                    console.log("The date of the event is: " + eventDate)
+
+                                    // //* Date of the Event (use moment to format this as "MM/DD/YYYY")
+
+                                    var eventObj = {
+                                        venue: event[i].venue.name,
+                                        city: event[i].venue.city,
+                                        eventDate: event[i].datetime
+                                    };
+                                    console.log('\n\tDetails\n');
+                                    console.log(eventObj);
                                 }
+
                             }).catch(function(error) {
                                 console.log("---------------Data---------------");
                                 console.log(error.config);
                             });
-                    })
+                    });
             } else if (pickedOP === 'spotify-this-song') {
                 inquirer
                     .prompt([{
@@ -57,8 +62,8 @@ const main = function() {
                                 artist: data.tracks.items[0].artists[0].name,
                                 link: data.tracks.items[0].external_urls.spotify,
                                 album: data.tracks.items[0].album.name
-                            }
-                            console.log('\n\tDetails\n')
+                            };
+                            console.log('\n\tDetails\n');
                             console.log(songObj);
                         });
                     });
@@ -82,12 +87,12 @@ const main = function() {
                                     movie_language: response.data.Language,
                                     plot: response.data.Plot,
                                     actors: response.data.Actors
-                                }
+                                };
                                 console.log('\n\tDetails\n');
                                 console.log(movieObj);
                             }
                         );
-                    })
+                    });
             } else if (pickedOP === 'do-what-it-says') {
                 fs.readFile("random.txt", "utf8", function(error, data) {
                     if (error) {
@@ -106,13 +111,11 @@ const main = function() {
                             album: data.tracks.items[0].album.name
                         };
                         console.log('\n\tDetails\n');
-                        console.log(songObj);
+                        console.log(json.stringify(songObj));
                     });
                 });
-
-                //make axios call
-                //display shit for the user
             }
         });
 };
+
 main();
