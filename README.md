@@ -44,4 +44,11 @@ Displays:
 the text is split into an array and then passed as input for spotify-this.
 Displays spotify-this search response. 
 
+# Screen Shots
+![image](https://user-images.githubusercontent.com/49127555/59891483-29595100-938a-11e9-8180-f46cb8eef68e.png)
+![image](https://user-images.githubusercontent.com/49127555/59891546-69b8cf00-938a-11e9-951c-9faff693f2a8.png)
+![image](https://user-images.githubusercontent.com/49127555/59891594-966ce680-938a-11e9-939c-6ba91b052956.png)
+![image](https://user-images.githubusercontent.com/49127555/59891615-ac7aa700-938a-11e9-9bcb-97858db58005.png)
+![image](https://user-images.githubusercontent.com/49127555/59891636-b8666900-938a-11e9-838c-bb9bd8842506.png)
+
 
