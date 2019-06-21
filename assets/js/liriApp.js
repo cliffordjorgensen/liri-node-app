@@ -50,7 +50,8 @@ const main = function() {
                         name: "song"
                     }]).then(function(song) {
                         var songName = song.song;
-                        spotify.search({ type: 'track', query: songName, limit: 1, market: 'US', popularity: 100 }, function(err, data) {
+                        if (songName === "") { songName = "the sign ace of base"; }
+                        spotify.search({ type: 'track', query: songName, market: 'US', popularity: 100 }, function(err, data) {
                             if (err) {
                                 return console.log('Error occurred: ' + err);
                             }
@@ -72,7 +73,7 @@ const main = function() {
                         name: "userMovie"
                     }]).then(function(mov) {
                         var movie = mov.userMovie;
-
+                        if (movie === '') { movie = 'Mr Nobody'; }
                         axios.get("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=414d26ac").then(
                             function(response) {
                                 var movieObj = {
